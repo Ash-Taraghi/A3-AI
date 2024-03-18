@@ -146,16 +146,22 @@ def elapseTime(self, gameState):
     current position is known.
     """
     "*** YOUR CODE HERE ***"
+    # Create a counter to store the probability distribution for new ghost positions
     step = util.Counter(dict())
-
+    # Iterate over all possible ghost positions
     for pos in self.allPositions:
+        # Get the distribution of new positions for the ghost at the current position
         newPosDist = self.getPositionDistribution(gameState, pos)
+        # Update the belief for each new position based on the transition model and current belief
         for newGhostPos in newPosDist.keys():
             try:
                 step[newGhostPos] += newPosDist[newGhostPos] * self.beliefs[pos]
             except:
+                # If the new position is not in the counter, initialize it
                 step[newGhostPos] = newPosDist[newGhostPos] * self.beliefs[pos]
     step[gameState.getPacmanPosition()] = 0
+    
+    # Update the beliefs to the predicted distribution
     for i in step.keys():
         self.beliefs[i] = step[i]
     self.beliefs.normalize()
