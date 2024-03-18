@@ -92,17 +92,17 @@ def getObservationProb(self, noisyDistance, pacmanPosition, ghostPosition, jailP
     Return the probability P(noisyDistance | pacmanPosition, ghostPosition).
     """
     "*** YOUR CODE HERE ***"
-    # if (ghostPosition != jailPosition):
-    #     if (noisyDistance == None):
-    #         return 0
-    #     else:
-    #         trueDistance = util.manhattanDistance(pacmanPosition, ghostPosition)
-    #         return busters.getObservationProbability(noisyDistance, trueDistance)
-    # else:
-    #     if (noisyDistance == None):
-    #         return 1
-    #     else:
-    #         return 0
+    if (ghostPosition != jailPosition):
+        if (noisyDistance == None):
+            return 0
+        else:
+            trueDistance = util.manhattanDistance(pacmanPosition, ghostPosition)
+            return busters.getObservationProbability(noisyDistance, trueDistance)
+    else:
+        if (noisyDistance == None):
+            return 1
+        else:
+            return 0
 
 
 
@@ -122,12 +122,17 @@ def observeUpdate(self, observation, gameState):
     position is known.
     """
     "*** YOUR CODE HERE ***"
-    pacmanPos = gameState.getPacmanPosition()
-    jailPos = self.getJailPosition()
-    
-    for ghostPos in self.allPositions:
-        self.beliefs[ghostPos] = self.getObservationProb(observation, pacmanPos, ghostPos, jailPos) * self.beliefs[ghostPos]
-    
+    for pos in self.allPositions:
+        pacmanPos = gameState.getPacmanPosition()
+        jailPos = self.getJailPosition()
+
+        # Get the observation probability
+        obsProb = self.getObservationProb(observation, pacmanPos, pos, jailPos)
+        # Check if ghost in jail
+        if obsProb == 1:
+            self.beliefs[pos] = 1
+        self.beliefs[pos] = obsProb * self.beliefs[pos]
+
     self.beliefs.normalize()
 
 
@@ -151,6 +156,6 @@ def elapseTime(self, gameState):
             except:
                 step[newGhostPos] = newPosDist[newGhostPos] * self.beliefs[pos]
     step[gameState.getPacmanPosition()] = 0
-    for k in step.keys():
-        self.beliefs[k] = step[k]
+    for i in step.keys():
+        self.beliefs[i] = step[i]
     self.beliefs.normalize()
