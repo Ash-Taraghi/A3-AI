@@ -163,30 +163,30 @@ class GreedyBustersAgent(BustersAgent):
 
 
         "*** YOUR CODE HERE ***"
-        # selectedGhosts = []
-        # for ghostDisttribution in livingGhostPositionDistributions:
-        #     ghostPositions = list(ghostDisttribution.keys())
-        #     maxLikelihoodPos = ghostPositions[0]
-        #     for position in ghostPositions[1:]:
-        #         if ghostDisttribution[maxLikelihoodPos] < ghostDisttribution[ghostPositions]:
-        #             maxLikelihoodPos = position
-        #     selectedGhosts.append(maxLikelihoodPos)
+        selectedGhosts = []
+        for ghostDisttribution in livingGhostPositionDistributions:
+            ghostPositions = list(ghostDisttribution.keys())
+            maxLikelihoodPos = ghostPositions[0]
+            for position in ghostPositions[1:]:
+                if ghostDisttribution[maxLikelihoodPos] < ghostDisttribution[position]:
+                    maxLikelihoodPos = position
+            selectedGhosts.append(maxLikelihoodPos)
         
-        # closestGhostPos = selectedGhosts[0]
-        # shortestDistance = self.distancer.getDistance(pacmanPosition, closestGhostPos)
-        # for ghostPos in selectedGhosts[1:]:
-        #     distanceToPacman = self.distancer.getDistance(pacmanPosition, ghostPos)
-        #     if distanceToPacman < shortestDistance:
-        #         shortestDistance = distanceToPacman
-        #         closestGhostPos = ghostPos
+        closestGhostPos = selectedGhosts[0]
+        shortestDistance = self.distancer.getDistance(pacmanPosition, closestGhostPos)
+        for ghostPos in selectedGhosts[1:]:
+            distanceToPacman = self.distancer.getDistance(pacmanPosition, closestGhostPos)
+            if distanceToPacman < shortestDistance:
+                shortestDistance = distanceToPacman
+                closestGhostPos = ghostPos
 
-        # bestAction = legal[0]
-        # nextPosition = Actions.getSuccessor(pacmanPosition, bestAction[0])
-        # for move in legal[1:]:
-        #     newPosition = Actions.getSuccessor(pacmanPosition, move)
-        #     if self.distancer.getDistance(nextPosition, closestGhostPos) > self.distancer.getDistance(newPosition, closestGhostPos):
-        #         nextPosition = newPosition
-        #         bestAction = move
-        # return bestAction
+        bestAction = legal[0]
+        nextPosition = Actions.getSuccessor(pacmanPosition, legal[0])
+        for move in legal[1:]:
+            newPosition = Actions.getSuccessor(pacmanPosition, move)
+            if self.distancer.getDistance(nextPosition, closestGhostPos) > self.distancer.getDistance(newPosition, closestGhostPos):
+                nextPosition = newPosition
+                bestAction = move
+        return bestAction
 
 
